@@ -1,0 +1,47 @@
+# Chat with PDF — A Simple RAG System
+
+Part of my Gen AI learning journey — Phase 3: RAG (Retrieval Augmented Generation).
+
+## What this does
+Lets you ask questions about any PDF document and get answers grounded strictly in that document's content — not the AI's general knowledge. Built entirely with free, local tools (no API key, no billing).
+
+## How it works (the RAG pipeline)
+1. **Extract** — Pull text out of the PDF
+2. **Chunk** — Split the text into smaller pieces (500 words, with overlap to preserve context at boundaries)
+3. **Embed & Store** — Convert each chunk into a vector (using `sentence-transformers`) and store it in a vector database (Chroma)
+4. **Query** — When you ask a question, it's converted into a vector too, and the database finds the most relevant chunks (semantic search)
+5. **Generate** — The retrieved chunks + your question are sent to a local LLM (Llama 3.2 via Ollama), which answers using only that context
+
+## Example run
+Tested with a sample employee handbook PDF.
+
+**Q: What are the standard work hours?**
+A: Correctly answered — "9:30 AM to 6:30 PM, Monday through Friday, with a one-hour lunch break."
+
+**Q: How many paid leave days do employees get per year?**
+A: Correctly answered — "18 paid leave days per calendar year."
+
+**Q: Can I work from home?**
+A: Correctly answered — even though the document only says "remote work," never "work from home." This proves **semantic search** works by meaning, not just exact keyword matching.
+
+## Key learning
+The system doesn't just do keyword matching — it understands meaning. Asking about "work from home" correctly matched the document's "remote work" policy, proving embeddings capture semantic relationships, not just literal word overlap.
+
+This also demonstrates why RAG reduces hallucination: the model is instructed (via system prompt, from Phase 2) to only answer from retrieved context, and to say "I don't have that information" if the answer isn't present — instead of guessing.
+
+## Tools used
+- Ollama (free, local) + Llama 3.2 — for generation
+- ChromaDB — free local vector database
+- sentence-transformers (`all-MiniLM-L6-v2`) — for embeddings
+- pypdf — for PDF text extraction
+
+## How to run
+```bash
+pip install chromadb pypdf sentence-transformers ollama
+ollama pull llama3.2
+python rag_chat.py
+```
+Place your PDF as `document.pdf` in the same folder before running.
+
+## What's next
+Phase 3 complete — moving to Phase 4: Agents (tool use, multi-step reasoning, building a research agent).
