@@ -1,0 +1,40 @@
+# Research Agent — Web Search + Report Generation
+
+Part of my Gen AI learning journey — Phase 4: Agents.
+
+## What this does
+Give it a topic, and it searches the web on its own, reads through the results, and writes a clean, organized summary report — without me having to search or read anything manually.
+
+## How it works (the Agent Loop)
+1. **Act** — Calls a web search tool (DuckDuckGo, free, no API key) to fetch real, current results on the given topic
+2. **Observe** — Reads through the returned search results (titles, snippets, sources)
+3. **Think & Answer** — Synthesizes all the retrieved information into a structured report (title, key findings, conclusion) — using only what was found, not the model's own training knowledge
+
+## Why this matters
+My local model (Llama 3.2) has a training cutoff — it has no idea what happened in 2026. By giving it a web search **tool**, it fetched real, current information first, then generated a report using only that real data. This is the core idea behind AI Agents: not a smarter model, just a regular LLM given the ability to look things up before answering.
+
+## Example run
+**Topic:** "latest AI trends 2026"
+
+**Report generated (summarized):**
+- Open-source AI ecosystem is accelerating (IBM Granite, Ai2 Olmo 3, DeepSeek models)
+- Experts predict the AI bubble may deflate in 2026, impacting the broader economy
+- Multimodal agent workflows becoming mainstream (e.g. Moonshot AI's Kimi K2.5)
+- AI playing a bigger role in real scientific discovery (physics, chemistry, biology)
+- Growth of "AI factory" infrastructure for enterprise AI adoption
+
+The agent correctly synthesized 4 separate search results into one coherent report, staying grounded in the actual retrieved content.
+
+## Tools used
+- Ollama + Llama 3.2 (free, local) — for reasoning and report generation
+- `ddgs` (DuckDuckGo Search) — free web search, no API key required
+
+## How to run
+```bash
+pip install ddgs ollama
+ollama pull llama3.2
+python research_agent.py
+```
+
+## What's next
+Phase 4 complete — moving to Phase 5: Fine-tuning & Open-Source Models.
